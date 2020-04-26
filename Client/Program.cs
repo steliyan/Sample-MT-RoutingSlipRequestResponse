@@ -29,8 +29,18 @@ namespace Client
 
                     try
                     {
-                        var response = await client.GetResponse<OrderCompleted>(new { Id = orderId });
-                        Console.WriteLine("Order id: {0}; data: {1}", response.Message.Id, response.Message.Data);
+                        var (completed, faulted) = await client.GetResponse<OrderCompleted, OrderFaulted>(new { Id = orderId });
+
+                        if (completed.Status == TaskStatus.RanToCompletion)
+                        {
+                            var result = await completed;
+                            Console.WriteLine("Order id: {0}; data: {1}", result.Message.Id, result.Message.Data);
+                        }
+                        else
+                        {
+                            var result = await faulted;
+                            Console.WriteLine("Order id: {0}; faulted with a reason: {1}", result.Message.Id, result.Message.Reason);
+                        }
                     }
                     catch (Exception e)
                     {
