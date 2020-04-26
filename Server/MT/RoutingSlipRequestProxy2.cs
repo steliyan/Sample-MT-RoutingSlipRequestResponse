@@ -31,13 +31,13 @@ namespace MassTransit.Courier
             builder.AddVariable("FaultAddress", context.FaultAddress);
             builder.AddVariable("Request", context.Message);
 
-            BuildRoutingSlip(builder, context);
+            await BuildRoutingSlip(builder, context);
 
             var routingSlip = builder.Build();
 
             await context.Execute(routingSlip).ConfigureAwait(false);
         }
 
-        protected abstract void BuildRoutingSlip(RoutingSlipBuilder builder, ConsumeContext<TRequest> request);
+        protected abstract Task BuildRoutingSlip(RoutingSlipBuilder builder, ConsumeContext<TRequest> request);
     }
 }

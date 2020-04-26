@@ -29,7 +29,7 @@
 
             var endpoint = await context.GetSendEndpoint(responseAddress).ConfigureAwait(false);
 
-            var response = CreateResponseMessage(context, request);
+            var response = await CreateResponseMessage(context, request);
 
             await endpoint.Send(response, x => x.RequestId = requestId)
                 .ConfigureAwait(false);
@@ -59,6 +59,6 @@
                 .ConfigureAwait(false);
         }
 
-        protected abstract TResponse CreateResponseMessage(ConsumeContext<RoutingSlipCompleted> context, TRequest request);
+        protected abstract Task<TResponse> CreateResponseMessage(ConsumeContext<RoutingSlipCompleted> context, TRequest request);
     }
 }
